@@ -1,0 +1,47 @@
+<div class="map-container">
+
+  <!-- Manual search bar (shown always, used as fallback when GPS denied) -->
+  <div class="search-bar">
+    <input
+      type="text"
+      [(ngModel)]="manualSearchQuery"
+      placeholder="Search by area or address..."
+      (keyup.enter)="searchByAddress()"
+    />
+    <button (click)="searchByAddress()">Search</button>
+  </div>
+
+  <!-- GPS error message -->
+  <div class="location-error" *ngIf="locationError">
+    {{ locationError }}
+  </div>
+
+  <!-- Category filter -->
+  <div class="category-filter">
+    <button (click)="onCategoryChange('')"           [class.active]="selectedCategory === ''">All</button>
+    <button (click)="onCategoryChange('Electrician')" [class.active]="selectedCategory === 'Electrician'">Electrician</button>
+    <button (click)="onCategoryChange('Plumber')"     [class.active]="selectedCategory === 'Plumber'">Plumber</button>
+    <button (click)="onCategoryChange('Home Cleaning')" [class.active]="selectedCategory === 'Home Cleaning'">Cleaning</button>
+    <button (click)="onCategoryChange('Carpenter')"   [class.active]="selectedCategory === 'Carpenter'">Carpenter</button>
+  </div>
+
+  <!-- Loading indicator -->
+  <div class="loading-bar" *ngIf="isLoading">Searching nearby providers...</div>
+
+  <!-- The map div — id must match what L.map() targets -->
+  <div id="map"></div>
+
+  <!-- Provider list below map -->
+  <div class="provider-list">
+    <div class="provider-card" *ngFor="let p of providers">
+      <h4>{{ p.user.name }}</h4>
+      <p>{{ p.category }} · ₹{{ p.hourlyRate }}/hr</p>
+      <p>Rating: {{ p.avgRating }}/5 · {{ p.badge }} badge</p>
+      <button (click)="bookProvider(p)">Book Now</button>
+    </div>
+    <p *ngIf="providers.length === 0 && !isLoading">
+      No providers found in this area. Try moving the map or changing the filter.
+    </p>
+  </div>
+
+</div>
